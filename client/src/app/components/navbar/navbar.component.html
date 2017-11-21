@@ -7,16 +7,16 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-            <a class="navbar-brand" routerLink="/home">Bootstrap theme</a>
+            <a class="navbar-brand" routerLink="/home">MEAN Stack</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-left">
-                <li routerLinkActive="active"><a routerLink="/home">Home</a></li>
-                <li routerLinkActive="active"><a routerLink="/abouts/">About</a></li>
-                <li routerLinkActive="active"><a routerLink="/contacts/">Contact</a></li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}"><a routerLink="/home">Home</a></li>
+
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li routerLinkActive="active"><a routerLink="/profile">Profile</a></li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}"><a routerLink="/dashboard">Dashboard</a></li>
+                <li><a routerLink="/profile">Profile</a></li>
                 <li><a routerLink="/blog">Blog</a></li>
                 <li><a routerLink="/login">Login</a></li>
                 <li><a routerLink="/logout">Logout</a></li>
