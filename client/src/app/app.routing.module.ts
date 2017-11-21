@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { HomeComponent } from './components/home/home.component';
 import { PagenotfoundComponent } from './components/pagenotfound/pagenotfound.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { RegisterComponent } from './components/register/register.component';
 
 const appRoutes: Routes = [   
      {
@@ -14,11 +15,16 @@ const appRoutes: Routes = [
      },
      { 
         path: 'home', 
-        component: HomeComponent 
+        component: HomeComponent,
+        data: { title: 'Home' }
      },
      { 
         path: 'dashboard', 
         component: DashboardComponent 
+     },
+     { 
+        path: 'register', 
+        component: RegisterComponent 
      },
      { 
         path: '**', 
