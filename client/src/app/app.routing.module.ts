@@ -7,31 +7,35 @@ import { PagenotfoundComponent } from './components/pagenotfound/pagenotfound.co
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { RegisterComponent } from './components/register/register.component';
 
-const appRoutes: Routes = [   
-     {
-        path: '', 
+import { LoginComponent } from './components/login/login.component';
+
+import { ProfileComponent } from './components/profile/profile.component';
+
+const appRoutes: Routes = [{
+        path: '',
         redirectTo: '/home', pathMatch: 'full',
         data: { title: 'Home' }
-     },
-     { 
-        path: 'home', 
+     }, {
+        path: 'home',
         component: HomeComponent,
         data: { title: 'Home' }
-     },
-     { 
-        path: 'dashboard', 
-        component: DashboardComponent 
-     },
-     { 
-        path: 'register', 
-        component: RegisterComponent 
-     },
-     { 
-        path: '**', 
+     }, {
+        path: 'dashboard',
+        component: DashboardComponent
+     }, {
+        path: 'register',
+        component: RegisterComponent
+     }, {
+      path: 'login',
+      component: LoginComponent
+   }, {
+    path: 'profile',
+    component: ProfileComponent
+ }, {
+        path: '**',
         component: PagenotfoundComponent,
         data: { title: '404' }
-     }
-]
+     }];
 
 @NgModule({
     declarations: [],

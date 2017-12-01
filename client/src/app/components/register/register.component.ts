@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { AuthService } from '../../services/auth.service';
+
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -8,12 +13,23 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class RegisterComponent implements OnInit {
 
   form: FormGroup;
+  message;
+  messageClass;
+  processing = false;
+  emailValid;
+  emailMessage;
+  usernameValid;
+  usernameMessage;
 
-  constructor(private formBuilder: FormBuilder) { 
-    this.createForm();
+  constructor(
+    private formBuilder: FormBuilder,
+    private autService: AuthService,
+    private router: Router
+  ) {
+      this.createForm();
   }
 
-  createForm(){
+  createForm() {
     this.form = this.formBuilder.group({
       email: ['', Validators.compose([
         Validators.required,
@@ -33,52 +49,117 @@ export class RegisterComponent implements OnInit {
         this.validatePassword
       ])],
       confirm: ['', Validators.required]
-    }, { validator: this.matchingPasswords('password', 'confirm')})
+    }, { validator: this.matchingPasswords('password', 'confirm')});
   }
 
-  validateEmail(controls){
-    const regExp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-    if(regExp.test(controls.value)){
+  validateEmail( controls ) {
+
+    const rx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const regExp = new RegExp(rx);
+    if (regExp.test( controls.value )) {
       return null;
-    }
-    else{
-      return {'validateEmail': true}
+    } else {
+      return {'validateEmail': true};
     }
   }
 
-  validateUsername(controls){
+  validateUsername(controls) {
     const regExp = new RegExp(/^[a-zA-Z0-9]+$/);
-    if(regExp.test(controls.value)){
+    if (regExp.test(controls.value)) {
       return null;
-    }
-    else{
-      return {'validateUsername': true}
+    } else {
+      return {'validateUsername': true};
     }
   }
 
-  validatePassword(controls){
-    const regExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,25})");
-    if(regExp.test(controls.value)){
+  validatePassword(controls) {
+    const regExp = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,25})');
+    if (regExp.test(controls.value)) {
       return null;
-    }
-    else{
-      return {'validatePassword': true}
+    } else {
+      return {'validatePassword': true};
     }
   }
 
-  matchingPasswords(password, confirm){
+  matchingPasswords(password, confirm) {
     return (group: FormGroup) => {
-      if(group.controls[password].value === group.controls[confirm].value){
-        return null
-      }else{
-        return {'matchingPasswords': true }
+      if (group.controls[password].value === group.controls[confirm].value) {
+        return null;
+      } else {
+        return {'matchingPasswords': true };
       }
-    }
+    };
   }
 
-  onRegisterSubmit(){
-    console.log(this.form);
-    this.createForm();
+  disableForm() {
+    this.form.controls['username'].disable();
+    this.form.controls['email'].disable();
+    this.form.controls['password'].disable();
+    this.form.controls['confirm'].disable();
+  }
+
+  enableForm() {
+    this.form.controls['username'].enable();
+    this.form.controls['email'].enable();
+    this.form.controls['password'].enable();
+    this.form.controls['confirm'].enable();
+  }
+
+  onRegisterSubmit() {
+    this.processing = true;
+    this.disableForm();
+    const user = {
+      email: this.form.get('email').value,
+      username: this.form.get('username').value,
+      password: this.form.get('password').value
+    };
+    /* console.log(this.form.get('email').value);
+    this.createForm(); */
+
+    this.autService.registerUser(user).subscribe(data => {
+      // console.log(data);
+      if (!data.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = data.message;
+        this.processing = false;
+        this.enableForm();
+      } else {
+        this.messageClass = 'alert alert-success';
+        this.message = data.message;
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
+      }
+    });
+  }
+
+  checkUsername() {
+    const username = this.form.get('username').value;
+    this.autService.checkUsername(username).subscribe(data => {
+      // console.log(data);
+      if (!data.success) {
+        this.usernameValid = false;
+        this.usernameMessage = data.message;
+      } else {
+        this.usernameValid = true;
+        this.usernameMessage = data.message;
+      }
+    });
+  }
+
+
+  checkEmail() {
+    const email = this.form.get('email').value;
+    this.autService.checkEmail(email).subscribe(data => {
+      // console.log(data);
+      if (!data.success) {
+        this.emailValid = false;
+        this.emailMessage = data.message;
+      } else {
+        this.emailValid = true;
+        this.emailMessage = data.message;
+      }
+    });
   }
 
   ngOnInit() {
