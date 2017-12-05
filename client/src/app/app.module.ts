@@ -5,7 +5,7 @@ import { NgModule } from '@angular/core';
 
 import { HttpModule } from '@angular/http';
 
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /* import routing modules  */
 
@@ -29,6 +29,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,7 +44,6 @@ import { FlashMessagesModule } from 'angular2-flash-messages';
     imports: [
     BrowserModule,
     HttpModule,
-    FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
     FlashMessagesModule.forRoot()
